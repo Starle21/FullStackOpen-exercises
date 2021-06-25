@@ -12,6 +12,9 @@ const App = () => {
   const [bad, setBad] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [good, setGood] = useState(0);
+  const total = bad + neutral + good;
+  const average = (good - bad) / total;
+  const positivePercent = (good / total) * 100;
 
   const giveFeedback = type => {
     if (type === 'good') return () => setGood(good + 1);
@@ -29,6 +32,9 @@ const App = () => {
       <p>good: {good}</p>
       <p>neutral: {neutral}</p>
       <p>bad: {bad}</p>
+      <p>total: {total}</p>
+      <p>average: {average}</p>
+      <p>positive: {positivePercent}%</p>
     </div>
   );
 };
