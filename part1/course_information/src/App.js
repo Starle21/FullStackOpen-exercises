@@ -1,43 +1,35 @@
 import React from 'react';
 
-const Header = props => {
-  return <h1>{props.course.name}</h1>;
+const Header = ({ course }) => {
+  return <h1>{course.name}</h1>;
 };
 
-const Part = props => {
+const Part = ({ part, exercise }) => {
   return (
     <p>
-      {props.part} {props.exercise}
+      {part} {exercise}
     </p>
   );
 };
 
-const Content = props => {
+const Content = ({ course }) => {
   return (
     <>
-      <Part
-        part={props.course.parts[0].name}
-        exercise={props.course.parts[0].exercises}
-      />
-      <Part
-        part={props.course.parts[1].name}
-        exercise={props.course.parts[1].exercises}
-      />
-      <Part
-        part={props.course.parts[2].name}
-        exercise={props.course.parts[2].exercises}
-      />
+      <Part part={course.parts[0].name} exercise={course.parts[0].exercises} />
+      <Part part={course.parts[1].name} exercise={course.parts[1].exercises} />
+      <Part part={course.parts[2].name} exercise={course.parts[2].exercises} />
     </>
   );
 };
 
-const Total = props => {
+const Total = ({ course }) => {
+  console.log(course);
   return (
     <p>
       Number of exercises:{' '}
-      {props.course.parts[0].exercises +
-        props.course.parts[1].exercises +
-        props.course.parts[2].exercises}{' '}
+      {course.parts[0].exercises +
+        course.parts[1].exercises +
+        course.parts[2].exercises}{' '}
     </p>
   );
 };
