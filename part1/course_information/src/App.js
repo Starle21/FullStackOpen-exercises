@@ -13,7 +13,6 @@ const Part = ({ part, exercise }) => {
 };
 
 const Content = ({ course }) => {
-  console.log(course);
   return (
     <>
       {course.parts.map(part => {
