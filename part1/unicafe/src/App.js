@@ -11,10 +11,12 @@ const Button = ({ handleClick, text }) => {
 const Statistic = ({ text, value }) => {
   return (
     <>
-      <p>
-        {text}: {value}
-        {text === 'positive' ? '%' : ''}
-      </p>
+      <tr>
+        <td>{text}:</td>
+        <td>
+          {value} {text === 'positive' ? '%' : ''}
+        </td>
+      </tr>
     </>
   );
 };
@@ -23,14 +25,16 @@ const Statistics = ({ state }) => {
   if (state.total === 0) return <p>No feedback given</p>;
   if (state.total !== 0) {
     return (
-      <>
-        <Statistic text="good" value={state.good} />
-        <Statistic text="neutral" value={state.neutral} />
-        <Statistic text="bad" value={state.bad} />
-        <Statistic text="total" value={state.total} />
-        <Statistic text="average" value={state.average} />
-        <Statistic text="positive" value={state.positivePercent} />
-      </>
+      <table>
+        <tbody>
+          <Statistic text="good" value={state.good} />
+          <Statistic text="neutral" value={state.neutral} />
+          <Statistic text="bad" value={state.bad} />
+          <Statistic text="total" value={state.total} />
+          <Statistic text="average" value={state.average} />
+          <Statistic text="positive" value={state.positivePercent} />
+        </tbody>
+      </table>
     );
   }
 };
