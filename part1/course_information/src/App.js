@@ -27,12 +27,12 @@ const Content = ({ course }) => {
 
 const Total = ({ course }) => {
   return (
-    <p>
-      Number of exercises:{' '}
+    <h3>
+      total number of exercises:{' '}
       {course.parts.reduce((sum, part) => {
         return sum + part.exercises;
       }, 0)}
-    </p>
+    </h3>
   );
 };
 
@@ -66,8 +66,8 @@ const App = () => {
         id: 3,
       },
       {
-        name: 'xxx',
-        exercises: 0,
+        name: 'Redux',
+        exercises: 11,
         id: 4,
       },
     ],
