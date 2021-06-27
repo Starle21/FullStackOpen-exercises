@@ -8,13 +8,34 @@ const Button = ({ handleClick, text }) => {
   return <button onClick={handleClick}>{text}</button>;
 };
 
+const Statistics = ({ state }) => {
+  return (
+    <>
+      <Title text="statistics" />
+      <p>good: {state.good}</p>
+      <p>neutral: {state.neutral}</p>
+      <p>bad: {state.bad}</p>
+      <p>total: {state.total}</p>
+      <p>average: {state.average}</p>
+      <p>positive: {state.positivePercent}%</p>
+    </>
+  );
+};
+
 const App = () => {
+  // DATA, FUNCTIONS ON DATA
   const [bad, setBad] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [good, setGood] = useState(0);
-  const total = bad + neutral + good;
-  const average = (good - bad) / total;
-  const positivePercent = (good / total) * 100;
+
+  const statistics = {
+    bad: bad,
+    neutral: neutral,
+    good: good,
+    total: bad + neutral + good,
+  };
+  statistics.average = (good - bad) / statistics.total;
+  statistics.positivePercent = (good / statistics.total) * 100;
 
   const giveFeedback = type => {
     if (type === 'good') return () => setGood(good + 1);
@@ -22,19 +43,15 @@ const App = () => {
     if (type === 'neutral') return () => setNeutral(neutral + 1);
   };
 
+  // RENDERING
   return (
     <div>
       <Title text="give feedback" />
       <Button handleClick={giveFeedback('good')} text="good" />
       <Button handleClick={giveFeedback('neutral')} text="neutral" />
       <Button handleClick={giveFeedback('bad')} text="bad" />
-      <Title text="statistics" />
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
-      <p>total: {total}</p>
-      <p>average: {average}</p>
-      <p>positive: {positivePercent}%</p>
+
+      <Statistics state={statistics} />
     </div>
   );
 };
