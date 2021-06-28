@@ -4,12 +4,21 @@ const Person = ({ person }) => {
   return <div>{person}</div>;
 };
 
+// if newName === persons.name alert
+// else add to persons
+
 const App = () => {
   const [persons, setPersons] = useState([{ name: 'Arto Hellas' }]);
   const [newName, setNewName] = useState('');
 
   const addName = e => {
     e.preventDefault();
+
+    if (persons.some(person => person.name === newName)) {
+      alert(`${newName} has already been added to the phonebook`);
+      return;
+    }
+
     const newNameObject = {
       name: newName,
     };
