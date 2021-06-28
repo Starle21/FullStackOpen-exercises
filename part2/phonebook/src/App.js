@@ -8,15 +8,16 @@ const Person = ({ person }) => {
   );
 };
 
-// if newName === persons.name alert
-// else add to persons
-
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '689-5555' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' },
   ]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [filterValue, setFilterValue] = useState('');
 
   const addPerson = e => {
     e.preventDefault();
@@ -42,9 +43,22 @@ const App = () => {
     setNewNumber(e.target.value);
   };
 
+  const handleFilterChange = e => {
+    setFilterValue(e.target.value);
+  };
+
+  const filteredPersons = persons.filter(person =>
+    person.name.toLowerCase().includes(filterValue)
+  );
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter name by:{' '}
+        <input value={filterValue} onChange={handleFilterChange} />
+      </div>
+      <h2>Add a new contact</h2>
       <form onSubmit={addPerson}>
         <div>
           <div>
@@ -59,7 +73,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person => (
+      {filteredPersons.map(person => (
         <Person key={person.name} person={person} />
       ))}
     </div>
