@@ -47,8 +47,41 @@ const ShowCountry = ({ countries }) => {
       <div>
         <img src={countries[0].flag} alt="" />
       </div>
+      <ShowWeather capital={countries[0].capital} />
     </>
   );
+};
+
+const ShowWeather = ({ capital }) => {
+  const [weather, setWeather] = useState([]);
+  const apiKey = process.env.REACT_APP_API_KEY;
+  console.log(capital);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://api.weatherstack.com/current?access_key=${apiKey}&query=${capital}`
+      )
+      .then(response => {
+        setWeather(response.data);
+      })
+      .catch(() => console.log('error somwhere'));
+  }, [apiKey, capital]);
+  console.log(weather);
+
+  if (weather.length !== 0) {
+    return (
+      <div>
+        <h3>Current weather in {capital}</h3>
+        <p>temperature: {weather.current.temperature} Celsius</p>
+        <img src={weather.current.weather_icons[0]} alt="" />
+        <p>
+          wind: {weather.current.wind_speed} mph direction{' '}
+          {weather.current.wind_dir}
+        </p>
+      </div>
+    );
+  } else return <div></div>;
 };
 
 const Country = ({ countries, setSearchString }) => {
