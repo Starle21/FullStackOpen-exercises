@@ -12,7 +12,7 @@ function App() {
   }, []);
 
   const filteredCountries = countries.filter(country =>
-    country.name.toLowerCase().includes(searchString)
+    country.name.toLowerCase().includes(searchString.toLowerCase())
   );
 
   return (
@@ -22,40 +22,54 @@ function App() {
         value={searchString}
         onChange={e => setSearchString(e.target.value)}
       />
-      <Country countries={filteredCountries} />
+      <Country
+        countries={filteredCountries}
+        setSearchString={setSearchString}
+      />
     </div>
   );
 }
 
-const Country = ({ countries }) => {
+const ShowCountry = ({ countries }) => {
+  return (
+    <>
+      <h1>{countries[0].name}</h1>
+      <div>Capital: {countries[0].capital}</div>
+      <div>Population: {countries[0].population}</div>
+      <div>
+        <h3>languages</h3>
+        <ul>
+          {countries[0].languages.map(lang => {
+            return <li key={lang.name}>{lang.name}</li>;
+          })}
+        </ul>
+      </div>
+      <div>
+        <img src={countries[0].flag} alt="" />
+      </div>
+    </>
+  );
+};
+
+const Country = ({ countries, setSearchString }) => {
   if (countries.length === 250) {
     return <div> Search a specific country by its name.</div>;
   }
   if (countries.length === 1) {
-    return (
-      <>
-        <h1>{countries[0].name}</h1>
-        <div>Capital: {countries[0].capital}</div>
-        <div>Population: {countries[0].population}</div>
-        <div>
-          <h3>languages</h3>
-          <ul>
-            {countries[0].languages.map(lang => {
-              return <li key={lang.name}>{lang.name}</li>;
-            })}
-          </ul>
-        </div>
-        <div>
-          <img src={countries[0].flag} alt="" />
-        </div>
-      </>
-    );
+    return <ShowCountry countries={countries} />;
   }
   if (countries.length < 10) {
     return (
       <div>
         {countries.map(country => {
-          return <div key={country.alpha3Code}>{country.name}</div>;
+          return (
+            <div key={country.alpha3Code}>
+              {country.name}
+              <button onClick={() => setSearchString(country.name)}>
+                show
+              </button>
+            </div>
+          );
         })}
       </div>
     );
