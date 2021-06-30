@@ -80,7 +80,12 @@ const App = () => {
       name: newName,
       number: newNumber,
     };
-    setPersons(persons.concat(newObject));
+
+    axios
+      .post('http://localhost:3002/persons', newObject)
+      .then(response => setPersons(persons.concat(response.data)));
+
+    // setPersons(persons.concat(newObject));
     setNewName('');
     setNewNumber('');
   };
