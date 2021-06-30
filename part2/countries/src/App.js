@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function App() {
+const App = () => {
   const [searchString, setSearchString] = useState('');
   const [countries, setCountries] = useState([]);
 
@@ -10,25 +10,28 @@ function App() {
       setCountries(response.data);
     });
   }, []);
+  console.log(countries.length);
 
   const filteredCountries = countries.filter(country =>
     country.name.toLowerCase().includes(searchString.toLowerCase())
   );
 
-  return (
-    <div>
-      find coutries:
-      <input
-        value={searchString}
-        onChange={e => setSearchString(e.target.value)}
-      />
-      <Country
-        countries={filteredCountries}
-        setSearchString={setSearchString}
-      />
-    </div>
-  );
-}
+  if (countries.length !== 0) {
+    return (
+      <div>
+        find coutries:
+        <input
+          value={searchString}
+          onChange={e => setSearchString(e.target.value)}
+        />
+        <Country
+          countries={filteredCountries}
+          setSearchString={setSearchString}
+        />
+      </div>
+    );
+  } else return <div>request pending...</div>;
+};
 
 const ShowCountry = ({ countries }) => {
   return (
@@ -81,7 +84,7 @@ const ShowWeather = ({ capital }) => {
         </p>
       </div>
     );
-  } else return <div></div>;
+  } else return <div>request to get current weather pending...</div>;
 };
 
 const Country = ({ countries, setSearchString }) => {
