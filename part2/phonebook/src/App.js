@@ -4,8 +4,7 @@ import personsService from './services/persons';
 const Person = ({ person, click }) => {
   return (
     <div>
-      {person.name} {person.number}
-      <button onClick={click}>delete</button>
+      {person.name} {person.number} <button onClick={click}>delete</button>
     </div>
   );
 };
@@ -83,10 +82,17 @@ const App = () => {
 
   const addPerson = e => {
     e.preventDefault();
+    let id = null;
 
+    //check whether the array already happens to include the same name
     if (persons.some(person => person.name === newName)) {
-      alert(`${newName} has already been added to the phonebook`);
-      return;
+      const result = window.confirm(
+        `${newName} has already been added to the phonebook, replace the old number with the new one?`
+      );
+      if (result) {
+        const person = persons.filter(person => person.name === newName);
+        id = person[0].id;
+      } else return;
     }
 
     const newObject = {
@@ -94,9 +100,22 @@ const App = () => {
       number: newNumber,
     };
 
-    personsService
-      .create(newObject)
-      .then(returnedPerson => setPersons(persons.concat(returnedPerson)));
+    // update if the array already includes the name
+    if (id) {
+      personsService.update(id, newObject).then(returnedPerson => {
+        setPersons(
+          persons.map(person =>
+            person.id !== returnedPerson.id ? person : returnedPerson
+          )
+        );
+      });
+    }
+
+    if (!id) {
+      personsService
+        .create(newObject)
+        .then(returnedPerson => setPersons(persons.concat(returnedPerson)));
+    }
 
     setNewName('');
     setNewNumber('');
