@@ -1,12 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import personsService from './services/persons';
 
-const Person = ({ person }) => {
+const Person = ({ person, click }) => {
   return (
     <div>
       {person.name} {person.number}
+      <button onClick={click}>delete</button>
     </div>
   );
+};
+
+const Persons = props => {
+  const filteredPersons = props.persons.filter(person =>
+    person.name.toLowerCase().includes(props.filter)
+  );
+
+  const handleDelete = person => {
+    const result = window.confirm(`Are you sure to delete ${person.name}?`);
+    if (result) {
+      personsService.remove(person.id);
+      props.setPersons(filteredPersons.filter(p => p.id !== person.id));
+    }
+  };
+
+  return filteredPersons.map(person => (
+    <Person
+      key={person.name}
+      person={person}
+      click={() => handleDelete(person)}
+    />
+  ));
 };
 
 const PersonNameFilter = props => {
@@ -44,16 +67,6 @@ const PersonAddNew = props => {
       </div>
     </form>
   );
-};
-
-const Persons = props => {
-  const filteredPersons = props.persons.filter(person =>
-    person.name.toLowerCase().includes(props.filter)
-  );
-
-  return filteredPersons.map(person => (
-    <Person key={person.name} person={person} />
-  ));
 };
 
 const App = () => {
@@ -118,7 +131,7 @@ const App = () => {
       <PersonAddNew submit={addPerson} state={state} />
 
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filterValue} />
+      <Persons persons={persons} filter={filterValue} setPersons={setPersons} />
     </div>
   );
 };
