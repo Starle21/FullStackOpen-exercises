@@ -68,11 +68,14 @@ const PersonAddNew = props => {
   );
 };
 
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null;
+const Notification = ({ message, status }) => {
+  if (status === 'success') {
+    return <div className="notification">{message}</div>;
   }
-  return <div className="notification">{message}</div>;
+  if (status === 'error') {
+    return <div className="error">{message}</div>;
+  }
+  return null;
 };
 
 const App = () => {
@@ -81,6 +84,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [filterValue, setFilterValue] = useState('');
   const [notification, setNotification] = useState(null);
+  const [notificationStatus, setNotificationStatus] = useState(null);
 
   useEffect(() => {
     personsService.getAll().then(initialPersons => {
@@ -90,7 +94,7 @@ const App = () => {
 
   const addPerson = e => {
     e.preventDefault();
-    let id = null;
+    let currentPerson = null;
 
     //check whether the array already happens to include the same name
     if (persons.some(person => person.name === newName)) {
@@ -98,8 +102,7 @@ const App = () => {
         `${newName} has already been added to the phonebook, replace the old number with the new one?`
       );
       if (result) {
-        const person = persons.filter(person => person.name === newName);
-        id = person[0].id;
+        currentPerson = persons.filter(person => person.name === newName);
       } else return;
     }
 
@@ -108,26 +111,44 @@ const App = () => {
       number: newNumber,
     };
 
-    // update if the array already includes the name
-    if (id) {
-      personsService.update(id, newObject).then(returnedPerson => {
-        setPersons(
-          persons.map(person =>
-            person.id !== returnedPerson.id ? person : returnedPerson
-          )
-        );
-        setNotification(`Number changed for ${returnedPerson.name}`);
-        setTimeout(() => {
-          setNotification(null);
-        }, 3500);
-      });
+    // update the contact if the array already includes the name
+    if (currentPerson) {
+      personsService
+        .update(currentPerson[0].id, newObject)
+        .then(returnedPerson => {
+          setPersons(
+            persons.map(person =>
+              person.id !== returnedPerson.id ? person : returnedPerson
+            )
+          );
+          setNotificationStatus('success');
+          setNotification(`Number changed for ${returnedPerson.name}`);
+          setTimeout(() => {
+            setNotificationStatus(null);
+            setNotification(null);
+          }, 3500);
+        })
+        .catch(error => {
+          setNotificationStatus('error');
+          setNotification(
+            `Contact ${currentPerson[0].name} has already been removed from the server.`
+          );
+          setTimeout(() => {
+            setNotificationStatus(null);
+            setNotification(null);
+          }, 5000);
+          setPersons(persons.filter(p => p.id !== currentPerson[0].id));
+        });
     }
 
-    if (!id) {
+    // adding a new contact
+    if (!currentPerson) {
       personsService.create(newObject).then(returnedPerson => {
         setPersons(persons.concat(returnedPerson));
+        setNotificationStatus('success');
         setNotification(`Added ${returnedPerson.name}`);
         setTimeout(() => {
+          setNotificationStatus(null);
           setNotification(null);
         }, 3500);
       });
@@ -158,7 +179,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification message={notification} status={notificationStatus} />
       <PersonNameFilter
         value={filterValue}
         onChange={handleFilterChange}
