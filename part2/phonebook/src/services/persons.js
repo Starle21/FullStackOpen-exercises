@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:3002/persons';
+// backend on localhost
+// const baseURL = 'http://localhost:3005/api/persons';
+// backend on Heroku
+// const baseURL = 'https://evening-eyrie-68904.herokuapp.com/api/persons';
+// relative address
+const baseURL = '/api/persons';
 
 const getAll = () => {
   const request = axios.get(baseURL);
